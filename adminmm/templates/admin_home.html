@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ccb0b094;
+    }
+
+    .messages li {
+      background-color: #f44336;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 0 10px;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .form-container {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+
+    .form-container.active {
+      display: block;
+    }
+
+    .form-container label {
+      font-weight: bold;
+    }
+
+    .form-container input[type="text"],
+    .form-container select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-container input[type="text"]:focus,
+    .form-container select:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+
+    .success-message {
+      color: green;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .home-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #4f372d;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      z-index: 999;
+    }
+
+    #notification-container {
+      position: fixed;
+      top: 350px;
+      right: 20px;
+      width: 300px;
+      height: 200px;
+      max-height: 500px;
+      overflow: hidden;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+    }
+
+    #notification-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      animation: moveUp 10s infinite;
+      overflow-y: auto;
+    }
+
+    @keyframes moveUp {
+      0% {
+        transform: translateY(100%);
+      }
+
+      25% {
+        transform: translateY(0);
+      }
+
+      75% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-100%);
+      }
+    }
+
+    .notification {
+      background-color: #f1f1f1;
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .notification:hover {
+      background-color: #ddd;
+    }
+
+    .notification .mentee-name {
+      font-weight: bold;
+    }
+
+    .notification .mentee-department {
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="/adminmm/adminmm" class="home-button">Home</a>
+  <a href="/login/logout" style="margin-left: 9ch;" class="home-button">Log out</a>
+
+
+  <div class="container">
+    <h1>Admin Page</h1>
+
+    <div class="btn-container">
+      <button class="btn" onclick="generateReport()"><i class="fas fa-chart-pie"></i> Generate Report</button>
+      <button class="btn" onclick="searchMentor()"><i class="fas fa-search"></i> Search Mentor</button>
+      <button class="btn" onclick="searchMentee()"><i class="fas fa-search"></i> Search Mentee</button>
+      <button class="btn" onclick="addMentorForm()"><i class="fas fa-plus"></i> Add Mentor</button>
+      <button class="btn" onclick="deleteMentorForm()"><i class="fas fa-minus"></i> Delete Mentor</button>
+    </div>
+
+    <div id="report-container" class="form-container">
+      <h3>Generate Report</h3>
+      <button type="button" onclick="loadReportOverall()">Load Report Overall</button>
+      <button type="button" onclick="loadReportforMentor()">Load Report - Mentor</button>
+      <button type="button" onclick="loadReportforMentee()">Load Report - Mentee</button>
+    </div>
+
+    <div id="mentor-search-container" class="form-container">
+      <h3>Search Mentor</h3>
+      <form action="{% url 'show_mentor_details' %}" method="POST">
+        {% csrf_token %}
+        <label for="mentor-search">Name</label>
+        <input type="text" id="mentor-search" name="mentor-search" placeholder="Enter Mentor Name" required
+          autocomplete="off">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <div id="mentee-search-container" class="form-container">
+      <h3>Search Mentee</h3>
+      <form action="{% url 'view_mentee_details' %}" method="POST">
+        {% csrf_token %}
+        <label for="mentee-search">Name</label>
+        <input type="text" id="mentee-search" name="mentee-search" placeholder="Enter Mentee Name" required
+          autocomplete="off">
+        <button type="submit">Search</button>
+
+      </form>
+    </div>
+
+    <div id="add-mentor-container" class="form-container">
+      <h3>Add Mentor</h3>
+      <form action="{% url 'add_mentor' %}" method="POST">
+        {% csrf_token %}
+        <label for="mentor-name">Name</label>
+        <input type="text" id="mentor-name" name="mentor-name" placeholder="Enter Mentor Name" required
+          autocomplete="off">
+
+        <label for="mentor-department">Department</label>
+        <select id="mentor-department" name="mentor-department" required>
+          <option value="">Select Department</option>
+          <option value="IT">IT</option>
+          <option value="CSE">CSE</option>
+          <option value="ECE">ECE</option>
+          <option value="EEE">EEE</option>
+          <option value="BME">BME</option>
+          <option value="Chemical">Chemical</option>
+          <option value="Mechanical">Mechanical</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Maths">Maths</option>
+          <option value="English">English</option>
+          <option value="Civil">Civil</option>
+        </select>
+
+        <input type="submit" value="Add Mentor" class="btn">
+      </form>
+    </div>
+
+    <div id="delete-mentor-container" class="form-container">
+      <h3>Delete Mentor</h3>
+      <form action="{% url 'delete_mentor' %}" method="POST">
+        {% csrf_token %}
+        <label for="mentor-name">Name</label>
+        <input type="text" id="mentor-name" name="mentor-name" placeholder="Enter Mentor Name" required
+          autocomplete="off">
+
+        <input type="submit" value="Delete Mentor" class="btn">
+      </form>
+    </div>
+
+
+  </div>
+
+  {% if unassigned_mentees %}
+
+  <div id="notification-container">
+    <ul id="notification-list">
+      <h3>Please assign these mentees a mentor immediately</h3>
+
+      {% for mentee in unassigned_mentees %}
+      <li>{{ mentee.name }} - {{ mentee.department }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% endif %}
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
+  <script>
+    function loadReportOverall() {
+      window.location.href = "/adminmm/overall_report";
+    }
+
+    function generateReport() {
+      var reportContainer = document.getElementById("report-container");
+      reportContainer.classList.toggle("active");
+    }
+
+    function searchMentor() {
+      var mentorSearchContainer = document.getElementById("mentor-search-container");
+      mentorSearchContainer.classList.toggle("active");
+    }
+
+    function searchMentee() {
+      var menteeSearchContainer = document.getElementById("mentee-search-container");
+      menteeSearchContainer.classList.toggle("active");
+    }
+
+    function addMentorForm() {
+      var addMentorContainer = document.getElementById("add-mentor-container");
+      addMentorContainer.classList.toggle("active");
+    }
+    function deleteMentorForm() {
+      var deleteMentorContainer = document.getElementById("delete-mentor-container");
+      deleteMentorContainer.classList.toggle("active");
+    }
+
+    function loadReportforMentor() {
+
+      var mentorSearchContainer = document.getElementById("mentor-search-container");
+      mentorSearchContainer.classList.toggle("active");
+
+    }
+
+    function loadReportforMentee() {
+      var menteeSearchContainer = document.getElementById("mentee-search-container");
+      menteeSearchContainer.classList.toggle("active");
+    }
+
+
+
+    function addNotification(menteeName, menteeDepartment) {
+      var notificationList = document.getElementById("notification-list");
+      var notificationItem = document.createElement("li");
+      notificationItem.className = "notification";
+
+      var menteeNameElement = document.createElement("span");
+      menteeNameElement.className = "mentee-name";
+      menteeNameElement.textContent = menteeName;
+
+      var menteeDepartmentElement = document.createElement("span");
+      menteeDepartmentElement.className = "mentee-department";
+      menteeDepartmentElement.textContent = menteeDepartment;
+
+      notificationItem.appendChild(menteeNameElement);
+      notificationItem.appendChild(document.createTextNode(" - "));
+      notificationItem.appendChild(menteeDepartmentElement);
+
+      notificationList.appendChild(notificationItem);
+    }
+
+    var index = 0;
+    var interval = setInterval(function () {
+      addNotification(unassignedMentees[index]);
+      index++;
+      if (index >= unassignedMentees.length) {
+        index = 0;
+      }
+    }, 3000);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Mentees</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e6e6e6;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .details {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .details h3 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .details p {
+            margin: 0;
+            color: #333;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #c0392b;
+        }
+
+        .mentee-link {
+            color: #2980b9;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .mentee-link:hover {
+            color: #1c6389;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #4f372d;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/mentor/mentor" class="home-button">Home</a>
+
+
+    <div class="container">
+        <h1>List of Mentees</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mentee in mentees %}
+                <tr>
+                    <td>
+                        <a class="mentee-link" onclick="toggleDetails('{{ mentee.name }}')">{{ mentee.name }}</a>
+                    </td>
+                    <td>{{ mentee.department }}</td>
+                    <td>
+                        <button onclick="openEditPage('{{ mentee.name }}')">Edit</button>
+                        <button onclick="openDeletePage('{{ mentee.name }}')">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3">
+                        <div id="{{ mentee.name }}" class="details">
+                            <h3>Mentee Details</h3>
+                            <p>Name: {{ mentee.name }}</p>
+                            <p>Department: {{ mentee.department }}</p>
+                            <p>Details: {{ mentee.details }}</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button onclick="openAddPage()" class="button">Add Mentee</button>
+    </div>
+
+    <script>
+        function toggleDetails(menteeName) {
+            var detailsSection = document.getElementById(menteeName);
+            if (detailsSection.style.display === "none") {
+                detailsSection.style.display = "block";
+            } else {
+                detailsSection.style.display = "none";
+            }
+        }
+
+        function openEditPage(menteeName) {
+            window.location.href = "/mentor/editmentee?name=" + menteeName;
+        }
+
+        function openDeletePage(menteeName) {
+            window.location.href = "/mentor/deletementee?name=" + menteeName;
+        }
+
+        function openAddPage() {
+            window.location.href = "/mentor/addmentee";
+        }
+    </script>
+</body>
+
+</html>

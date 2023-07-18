@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentor Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #ccb0b094;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+    }
+
+    .box {
+      width: 200px;
+      height: 200px;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .box:hover {
+      background-color: #e1e1e1;
+      transform: scale(1.05);
+    }
+
+    .navigation {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .navigation a {
+      color: #fff;
+      text-decoration: none;
+      
+      padding: 10px;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .navigation a:hover {
+      background-color: #555;
+    }
+
+    .profile {
+      background-color: #896f6f;
+      color: #afedeb;
+      padding: 10px;
+      width: 10px;
+      /* Adjust the width to your desired size */
+      height: 10px;
+      /* Adjust the height to your desired size */
+      border-radius: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+
+    .profile:hover {
+      background-color: #555;
+    }
+
+    .box-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .home-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #4f372d;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="/mentor/mentor" class="home-button">Home</a>
+  <a href="/login/logout" style="margin-left: 9ch;" class="home-button">Log out</a>
+
+  <div class="navigation">
+    <a href="/mentor/mentor">Home</a>
+    <a href="/mentor/SearchMentees" class="active">Mentees</a>
+    <a href="/mentor/show_mentor_details">About</a>
+    <a href="/mentor/meetings">Meetings</a>
+    <a href="/mentor/announcements">Announcements</a>
+    <div class="profile" style="height: fit-content;">P</div>
+  </div>
+
+  <h1 style="text-align: center; margin-top: 20px;">Welcome {{mentor}}</h1>
+
+  <div class="container">
+    <div class="box" onclick="openMeetings()">
+      <i class="fas fa-calendar-alt box-icon"></i>
+      <h3>Meetings</h3>
+    </div>
+    <div class="box" onclick="openAnnouncements()">
+      <i class="fas fa-bullhorn box-icon"></i>
+      <h3>Announcements</h3>
+    </div>
+    <div class="box" onclick="openSearchMentees()">
+      <i class="fas fa-search box-icon"></i>
+      <h3>Search Mentees</h3>
+    </div>
+    <div class="box" onclick="openMentees()">
+      <i class="fas fa-users box-icon"></i>
+      <h3>Mentees</h3>
+    </div>
+    <div class="box" onclick="openRequestmeeting()">
+      <i class="fas fa-envelope box-icon"></i>
+      <h3>Meeting Requests</h3>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var referer = document.referrer;
+      if (referer.endsWith("/mentor/add_mentee/")) {
+        alert("Mentee added successfully!");
+        window.location.href = "/mentor/mentor";  // Redirect to the desired page
+      }
+    });
+
+    function openRequestmeeting() {
+      window.location.href = "/mentor/meeting_requests_mentor/"
+    }
+    function openMeetings() {
+      // Redirect to the meetings page
+      window.location.href = "/mentor/meetings";
+    }
+
+    function openAnnouncements() {
+      // Redirect to the announcements page
+      window.location.href = "/mentor/announcements";
+    }
+
+    function openSearchMentees() {
+      // Redirect to the Search Mentees page
+      window.location.href = "/mentor/SearchMentees";
+    }
+
+    function openMentees() {
+      // Redirect to the mentees page
+      window.location.href = "/mentor/list_of_mentees";
+    }
+
+
+
+
+    // Random color generator
+    function getRandomColor() {
+      const colors = ["#edc951", "#eb6841", "#cc2a36", "#4f372d", "#00a0b0", "#d11141", "#00b159", "#00aedb",
+        "#f37735", "#ffc425", "#96ceb4", "#ffeead", "#ff6f69", "#ffcc5c", "#88d8b0", "#ee4035",
+        "#f37736", "#fdf498", "#7bc043", "#0392cf"];
+
+      const randomIndex = Math.floor(Math.random() * colors.length);
+      return colors[randomIndex];
+    }
+
+
+    // Change box background color on click
+    const boxes = document.querySelectorAll(".box");
+    boxes.forEach((box) => {
+      box.addEventListener("click", function () {
+        this.style.backgroundColor = getRandomColor();
+      });
+    });
+
+    // Shake animation on profile hover
+    const profile = document.querySelector(".profile");
+    profile.addEventListener("mouseover", function () {
+      this.style.animation = "shake 0.5s ease-in-out";
+    });
+
+    profile.addEventListener("animationend", function () {
+      this.style.animation = "";
+    });
+
+  </script>
+</body>
+
+</html>

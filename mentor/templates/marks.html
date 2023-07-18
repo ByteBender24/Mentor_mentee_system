@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentee Marks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4320ce;
+        }
+
+        form {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            color: #4320ce;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4320ce;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"] {
+            margin-top: 20px;
+        }
+
+        button[type="submit"]:hover,
+        button[type="button"]:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/mentor/mentor">Home</a>
+    <form method="POST" action="{% url 'update_mentee_marks' %}">
+        {% csrf_token %}
+
+    <h1>Marks of {{ mentee.name }}</h1>
+
+        <table>
+            <tr>
+                <th>Exam</th>
+                <th>Mark (out of 100)</th>
+            </tr>
+            <tr>
+                <td>CAT 1</td>
+                <td><input type="number" id="CAT1" name="CAT1" min="0" max="100"
+                        {% if mentee.marks %} value="{{ mentee.marks.CAT1 }}" {% endif %}
+                        {% if readonly_state %} readonly {% endif %}></td>
+            </tr>
+            <tr>
+                <td>CAT 2</td>
+                <td><input type="number" id="CAT2" name="CAT2" min="0" max="100"
+                        {% if mentee.marks %} value="{{ mentee.marks.CAT2 }}" {% endif %}
+                        {% if readonly_state %} readonly {% endif %}></td>
+            </tr>
+            <tr>
+                <td>SAT</td>
+                <td><input type="number" id="SAT" name="SAT" min="0" max="100"
+                        {% if mentee.marks %} value="{{ mentee.marks.SAT }}" {% endif %}
+                        {% if readonly_state %} readonly {% endif %}></td>
+            </tr>
+            <tr>
+                <td>End_sem</td>
+                <td><input type="number" id="End_sem" name="End_sem" min="0" max="100"
+                        {% if mentee.marks %} value="{{ mentee.marks.End_sem }}" {% endif %}
+                        {% if readonly_state %} readonly {% endif %}></td>
+            </tr>
+        </table>
+        {% if not readonly_state %}
+        <button type="submit">Submit</button>
+        {% endif %}
+
+        {% if readonly_state %}
+        <button type="button" onclick="openEditMarks('{{mentee.name}}')">Edit</button>
+        {% endif %}
+    </form>
+    <script>
+        function openEditMarks(menteeName) {
+            window.location.href = "/mentor/update_marks/?name=" + menteeName;
+        }
+    </script>
+</body>
+
+</html>
