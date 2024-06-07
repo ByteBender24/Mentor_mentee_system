@@ -19,7 +19,7 @@ Make sure you have the following software installed on your machine:
    Open your terminal and clone the project repository:
 
    ```sh
-   git clone https://github.com/yourusername/yourrepository.git
+   git clone https://github.com/ByteBender24/Mentor_mentee_system.git
    cd <your repository>
    ```
 
