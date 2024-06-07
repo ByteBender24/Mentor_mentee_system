@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentee Details</title>
+  <style>
+    /* Styles for the page */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .mentee-details {
+      background-color: #f1f1f1;
+      padding: 20px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      text-align: center;
+    }
+
+    h1,
+    p {
+      margin-bottom: 10px;
+    }
+
+    ul {
+      padding-left: 0;
+      list-style-type: none;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #2980b9;
+    }
+
+    .home-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #4f372d;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      z-index: 999;
+    }
+
+    .chart-container {
+      margin-top: 20px;
+      width: 400px;
+      height: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="/adminmm/adminmm" class="home-button">Home</a>
+
+  <div class="mentee-details" id="menteeDetails">
+    <h1>Mentee Details</h1>
+    {% if mentee %}
+    <p>Name: {{ mentee.name }}</p>
+    <p>Department: {{ mentee.department }}</p>
+    <p>Contact Info: {{ mentee.contact_info }}</p>
+    <p>Mentor: {{ mentee.parent.name }}</p>
+    <table>
+      <tr>
+        <th>Exam</th>
+        <th>Marks (out of 100)</th>
+      </tr>
+      <tr>
+        <td>CAT1</td>
+        <td>{{ mentee.marks.CAT1 }}</td>
+      </tr>
+      <tr>
+        <td>CAT2</td>
+        <td>{{ mentee.marks.CAT2 }}</td>
+      </tr><tr>
+        <td>SAT</td>
+        <td>{{ mentee.marks.SAT }}</td>
+      </tr><tr>
+        <td>End_sem</td>
+        <td>{{ mentee.marks.End_sem }}</td>
+      </tr>
+    </table>
+    <div class = "chart-container">
+    {% if mentee_marks %}
+    <h2>Marks</h2>
+    <img src="data:image/png;base64,{{ image_base64 }}" alt="Mentee Marks graph analysis">
+    {% endif %}
+
+  </div>
+    {% else %}
+    <p>No mentee details found.</p>
+    {% endif %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Fade-in effect on page load
+    window.addEventListener('load', function () {
+      const menteeDetails = document.getElementById('menteeDetails');
+      fadeIn(menteeDetails);
+    });
+
+
+    function fadeIn(element) {
+      let opacity = 0;
+      const interval = setInterval(() => {
+        if (opacity >= 1) {
+          clearInterval(interval);
+        }
+        element.style.opacity = opacity;
+        opacity += 0.1;
+      }, 50);
+    }
+
+    function openEditPage() {
+      // Redirect to the editing page
+      alert("Get permission from mentor page!!");
+    }
+
+    function Delete() {
+      // Add visual effect or perform necessary deletion logic
+      alert("Get permission from mentor page!!");
+    }
+  </script>
+</body>
+
+</html>

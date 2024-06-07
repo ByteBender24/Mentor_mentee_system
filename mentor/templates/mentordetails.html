@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            resize: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-group input,
+        .input-group select {
+            flex-basis: 45%;
+        }
+
+        .input-group button {
+            flex-basis: 20%;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .row {
+            margin-bottom: 10px;
+        }
+
+        .row::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .row .column {
+            width: 50%;
+            float: left;
+            padding: 0 5px;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #4f372d;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/mentor/mentor" class="home-button">Home</a>
+
+    <div class="container">
+        <h1>Details of {{mentor.name}}</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="column">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" placeholder="Enter Name" value="{{mentor.name}}"
+                        autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                </div>
+                <div class="column">
+                    <label for="department">Department</label>
+                    <select id="department" name="department" required {% if readonly_state %}readonly{% endif %}>
+                        <option value="">Select Department</option>
+                        <option value="IT">IT</option>
+                        <option value="CSE">CSE</option>
+                        <option value="ECE">ECE</option>
+                        <option value="EEE">EEE</option>
+                        <option value="BME">BME</option>
+                        <option value="Chemical">Chemical</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Maths">Maths</option>
+                        <option value="English">English</option>
+                        <option value="Civil">Civil</option>
+                    </select>
+                </div>
+                <div class="column">
+                    <label for="description">Description</label>
+                    <input type="text" name="description" id="description" placeholder="Enter description"
+                        value="{{mentor.description}}" autocomplete="off" {% if readonly_state %} readonly {% endif %}>
+                </div>
+                <div class="column">
+                    <label for="availability">Availability</label>
+                    <input type="text" name="availability" placeholder="Enter Availability"
+                        value="{{mentor.availability}}" autocomplete="off" {% if readonly_state %} readonly {% endif %}>
+                </div>
+
+                <div class="column">
+                    <label for="contact-info">Contact Info</label>
+                    <input type="text" name="contact-info" placeholder="Enter Contact Info" required
+                        value="{{mentor.contact_info}}" autocomplete="off" {% if readonly_state %} readonly {% endif %}>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="column">
+                    <label for="experience">Experience in Various Fields</label>
+                    <textarea id="experience" name="experience" rows="5"
+                        placeholder="Enter your Experience in various fields" required autocomplete="off" {% if readonly_state %}readonly{% endif %}>{{ mentor.experience }}</textarea>
+                </div>
+                <div class="column">
+                    <label for="skills">Skills</label>
+                    <div id="skills-container">
+                        {% for key, value in skills %}
+                        <div class="input-group">
+                            <input type="text" name="department[]" placeholder="Department" value="{{ key }}" required
+                                autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                            <input type="text" name="skill[]" placeholder="Skill" value="{{ value }}" required
+                                autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                            <button type="button" onclick="addSkillRow()" disabled>+</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="column">
+                    <label for="education">Education</label>
+                    <div id="education-container">
+                        {% for key, value in education %}
+                        <div class="input-group">
+                            <input type="text" name="education[]" value="{{ key }}" placeholder="Education" required
+                                autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                            <input type="text" name="institution[]" value="{{ value }}" placeholder="Institution"
+                                required autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                            <button type="button" onclick="addEducationRow()">+</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="column">
+                    <label for="achievements">Achievements</label>
+                    <div id="achievements-container">
+                        {% for key, value in achievements %}
+                        <div class="input-group">
+                            <input type="text" name="achievements[]" value="{{ key }}" placeholder="Achievement"
+                                required autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                            <input type="text" name="year[]" value="{{ value }}" placeholder="Year" required
+                                autocomplete="off" {% if readonly_state %}readonly{% endif %}>
+                            <button type="button" onclick="addAchievementRow()">+</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            {% if readonly_state %}
+            <div class="row">
+                <input type="button" onclick="openEditmentor()" value="Edit" class="btn">
+            </div>
+            {% endif %}
+
+            {% if not readonly_state %}
+            <div class="row">
+                <input type="submit" value="Submit" class="btn">
+            </div>
+            {% endif %}
+        </form>
+
+        <script>
+            function openEditmentor() {
+                window.location.href = "/mentor/update_mentor_details";
+            }
+            document.getElementById("department").value = "{{mentor.department}}";
+            function addSkillRow() {
+                var skillsContainer = document.getElementById('skills-container');
+                var skillRow = document.createElement('div');
+                skillRow.classList.add('input-group');
+                skillRow.innerHTML = `
+                        <input type="text" name="department[]" placeholder="Department" required>
+                        <input type="text" name="skill[]" placeholder="Skill" required>
+                        <button type="button" onclick="removeRow(this)">-</button>
+                    `;
+                skillsContainer.appendChild(skillRow);
+            }
+
+            function addEducationRow() {
+                var educationContainer = document.getElementById('education-container');
+                var educationRow = document.createElement('div');
+                educationRow.classList.add('input-group');
+                educationRow.innerHTML = `
+                        <input type="text" name="education[]" placeholder="Education" required>
+                        <input type="text" name="institution[]" placeholder="Institution" required>
+                        <button type="button" onclick="removeRow(this)">-</button>
+                    `;
+                educationContainer.appendChild(educationRow);
+            }
+
+            function addAchievementRow() {
+                var achievementsContainer = document.getElementById('achievements-container');
+                var achievementRow = document.createElement('div');
+                achievementRow.classList.add('input-group');
+                achievementRow.innerHTML = `
+                        <input type="text" name="achievements[]" placeholder="Achievement" required>
+                        <input type="text" name="year[]" placeholder="Year" required>
+                        <button type="button" onclick="removeRow(this)">-</button>
+                    `;
+                achievementsContainer.appendChild(achievementRow);
+            }
+
+            function removeRow(element) {
+                var row = element.parentNode;
+                row.parentNode.removeChild(row);
+            }
+
+            function toggleReadOnly() {
+                var inputs = document.getElementsByTagName("input");
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].readOnly = isReadOnly;
+                }
+
+                var textareas = document.getElementsByTagName("textarea");
+                for (var i = 0; i < textareas.length; i++) {
+                    textareas[i].readOnly = isReadOnly;
+                }
+
+                var selects = document.getElementsByTagName("select");
+                for (var i = 0; i < selects.length; i++) {
+                    selects[i].disabled = isReadOnly;
+                }
+
+                var buttons = document.getElementsByTagName("button");
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = isReadOnly;
+                }
+            }
+
+            // Retrieve the readonly state from the views function in Django
+            var isReadOnly = "{{ readonly_state|yesno:'true,false' }}".toLowerCase() === "true";
+
+            // Call the toggleReadOnly function to apply the initial state
+            toggleReadOnly();
+
+
+        </script>
+    </div>
+</body>
+
+</html>

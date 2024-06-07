@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Mentor-Mentee Manager</title>
+    <style>
+        /* CSS for black background */
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        /* CSS for glassy effect */
+        .glassy-text {
+            color: #fff;
+            font-size: 48px;
+            text-align: center;
+            z-index: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* CSS for intro animation */
+        .animation {
+            animation-name: fade;
+            animation-duration: 3s;
+        }
+
+        /* Keyframes for intro animation */
+        @keyframes fade {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glassy-text animation">
+        <h1>Welcome to</h1>
+        <h1>Mentor-Mentee Manager</h1>
+    </div>
+
+    <script>
+        // JavaScript to trigger animation after page load
+        window.onload = function () {
+            var glassyText = document.querySelector('.glassy-text');
+            glassyText.classList.add('animation');
+
+            // Redirect after 5 seconds (5000 milliseconds)
+            setTimeout(function () {
+                window.location.href = '/login/login/'; // Replace with the desired URL
+            }, 5000);
+        };
+    </script>
+</body>
+
+</html>

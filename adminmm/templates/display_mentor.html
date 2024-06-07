@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentor Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .graph-container {
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      margin-right: auto  ;
+      max-width: 300px; /* Set the maximum width of the graph container */
+    }
+
+    .graph-container img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .mentee-details {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center; /* Center align the content */
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .mentor-details {
+      margin-bottom: 20px; /* Add some margin at the bottom to reduce the gap with the graph */
+    }
+
+    .meeting-details {
+      margin-bottom: 20px; /* Add some margin at the bottom to reduce the gap with the graph */
+    }
+
+    @media (max-width: 768px) {
+      .mentee-details {
+        flex-direction: column;
+      }
+
+      .mentor-details,
+      .meeting-details {
+        margin-left: 0;
+        margin-top: 20px;
+      }
+    }
+
+    h1,
+    h2,
+    p {
+      margin-bottom: 10px;
+    }
+
+    ul {
+      padding-left: 0;
+      list-style-type: none;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4320ce;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #2980b9;
+    }
+
+    .home-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #4f372d;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      z-index: 999;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+  </style>
+</head>
+
+<body>
+  <a href="/adminmm/adminmm" class="home-button">Home</a>
+  
+    <button id="printbtn" onclick="printpage()">Print</button>
+  
+  <div class="mentee-details" id="menteeDetails">
+    {% if mentor %}
+    <div class="mentor-details">
+      <h1 style="color: #4320ce;">Mentor Details</h1>
+      <p>Name: {{ mentor.name }}</p>
+      <p>Department: {{ mentor.department }}</p>
+      <p>Contact Info: {{mentor.contact_info}}</p>
+      <h2 style="color: #4320ce;">Mentees:</h2>
+      <ul>
+        {% for mentee in mentor.children %}
+        <li>{{ mentee.name }} ({{ mentee.department }})</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="meeting-details">
+      <h2 style="color: #4320ce;">Meeting Details</h2>
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Link</th>
+          <th>Details</th>
+          <th>Participants</th>
+        </tr>
+        {% for meeting in meeting_details %}
+        <tr>
+          <td>{{ meeting.date }}</td>
+          <td>{{ meeting.link }}</td>
+          <td>{{ meeting.details }}</td>
+          <td>{{ meeting.participants }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% else %}
+    <p>No mentor details found.</p>
+    {% endif %}
+  </div>
+
+  {% if mentor_graph %}
+  <div class="graph-container">
+    <h2>Meeting History Graph</h2>
+    <img src="data:image/png;base64,{{ mentor_graph }}" alt="Meeting History Graph">
+  </div>
+  {% endif %}
+
+  
+  <script>
+    // Fade-in effect on page load
+    window.addEventListener('load', function () {
+      const menteeDetails = document.getElementById('menteeDetails');
+      fadeIn(menteeDetails);
+    });
+
+    function fadeIn(element) {
+      let opacity = 0;
+      const interval = setInterval(() => {
+        if (opacity >= 1) {
+          clearInterval(interval);
+        }
+        element.style.opacity = opacity;
+        opacity += 0.1;
+      }, 50);
+    }
+
+    function openEditpage() {
+      // Redirect to the editing page
+      window.location.href = "/mentor/editmentee";
+    }
+
+    function Delete() {
+      // Add visual effect or perform necessary deletion logic
+      alert("Mentee deleted!");
+    }
+
+    function printpage() {
+      // Hide the print button during printing
+      document.getElementById("printbtn").style.visibility = "hidden";
+      window.print();
+      // Show the print button again after printing
+      document.getElementById("printbtn").style.visibility = "visible";
+    }
+  </script>
+</body>
+
+</html>

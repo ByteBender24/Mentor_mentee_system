@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentee Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #ccb0b094;
+
+    }
+
+    .home-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #4f372d;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      z-index: 999;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+    }
+
+    .box {
+      width: 200px;
+      height: 200px;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .box:hover {
+      background-color: #e1e1e1;
+      transform: scale(1.05);
+    }
+
+    .navigation {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .navigation a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .navigation a:hover {
+      background-color: #555;
+    }
+
+    .profile {
+      background-color: #896f6f;
+      color: #afedeb;
+      padding: 10px;
+      width: 10px;
+      /* Adjust the width to your desired size */
+      height: 10px;
+      /* Adjust the height to your desired size */
+      border-radius: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+
+    .profile:hover {
+      background-color: #555;
+    }
+
+    .box-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navigation">
+    <a href="/mentee/mentee">Home</a>
+    <a href="/mentee/show_mentee_details">About</a>
+    <a href="/mentee/meetings">Meetings</a>
+    <a href="/mentee/announcements">Announcements</a>
+    <div class="profile" style="height: fit-content;">P</div>
+  </div>
+
+  <h1 style="text-align: center; margin-top: 20px;">Welcome {{mentee}}</h1>
+
+  <div class="container">
+    <div class="box" onclick="request_meeting()">
+      <i class="fas fa-calendar-alt box-icon"></i>
+      <h3>Request meeting</h3>
+    </div>
+    <div class="box" onclick="openAnnouncements()">
+      <i class="fas fa-bullhorn box-icon"></i>
+      <h3>Announcements</h3>
+    </div>
+
+
+    <div class="box" onclick="OpenMentor()">
+      <i class="fas fa-users box-icon"></i>
+      <h3>Mentor profile</h3>
+    </div>
+    
+  </div>
+  <a href="/mentee/mentee" class="home-button">Home</a>
+  <a href="/login/logout" style="margin-left: 9ch;" class="home-button">Log out</a>
+
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var referer = document.referrer;
+      if (referer.endsWith("/mentee/add_mentee/")) {
+        alert("Mentee added successfully!");
+        window.location.href = "/mentee/mentee";  // Redirect to the desired page
+      }
+    });
+    function request_meeting() {
+      // Redirect to the meetings page
+      window.location.href = "/mentee/meetings";
+    }
+
+    function openAnnouncements() {
+      // Redirect to the announcements page
+      window.location.href = "/mentee/announcements";
+    }
+
+    function openSearchMentees() {
+      // Redirect to the Search Mentees page
+      window.location.href = "/mentee/SearchMentees";
+    }
+
+
+    function OpenMentor() {
+      // Redirect to the mentees page
+      window.location.href = "/mentee/mentor_profile";
+    }
+
+
+
+    // Random color generator
+    function getRandomColor() {
+      const letters = "0123456789ABCDEF";
+      let color = "#";
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // Change box background color on click
+    const boxes = document.querySelectorAll(".box");
+    boxes.forEach((box) => {
+      box.addEventListener("click", function () {
+        this.style.backgroundColor = getRandomColor();
+      });
+    });
+
+    // Shake animation on profile hover
+    const profile = document.querySelector(".profile");
+    profile.addEventListener("mouseover", function () {
+      this.style.animation = "shake 0.5s ease-in-out";
+    });
+    profile.addEventListener("animationend", function () {
+      this.style.animation = "";
+    });
+  </script>
+</body>
+
+</html>

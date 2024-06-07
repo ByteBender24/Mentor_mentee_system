@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+{% block content %}
+    <h1>Chat Room</h1>
+    <div id="messages">
+        {% for message in messages %}
+            <p>{{ message.sender }} - {{ message.timestamp }}: {{ message.content }}</p>
+        {% endfor %}
+    </div>
+    <form id="message-form">
+        <input type="hidden" id="room-id" value="{{ room.id }}">
+        <input type="text" id="message-input" autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        var roomID = document.getElementById('room-id').value;
+        var messageInput = document.getElementById('message-input');
+        var messageForm = document.getElementById('message-form');
+        var messagesDiv = document.getElementById('messages');
+
+        // Connect to the WebSocket
+        var socket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomID + '/');
+        
+        // Handle incoming messages
+        socket.onmessage = function(e) {
+            var message = JSON.parse(e.data);
+            var p = document.createElement('p');
+            p.textContent = message.sender + ' - ' + message.timestamp + ': ' + message.content;
+            messagesDiv.appendChild(p);
+        };
+
+        // Send message form submission
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var content = messageInput.value;
+            if (content) {
+                socket.send(JSON.stringify({
+                    'room_id': roomID,
+                    'content': content
+                }));
+                messageInput.value = '';
+            }
+        });
+    </script>
+{% endblock %}
+</body>
+</html>
+
