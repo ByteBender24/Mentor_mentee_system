@@ -86,7 +86,9 @@ class HashMap:
         """
         return self.hash_map.items()
 
-
+    def __str__(self) -> str:
+        return str(self.hash_map)
+    
 class Meeting:
     """
     Represents a meeting with its details.
@@ -107,7 +109,22 @@ class Meeting:
         self.details = details
         self.participants = participants
 
+    def __str__(self):
+        return (f"Event Details:\n"
+                f"Date: {self.date}\n"
+                f"Link: {self.link}\n"
+                f"Details: {self.details}\n"
+                f"Participants: {', '.join(self.participants)}")
+    
+    def __hash__(self):
+        return hash((self.date, self.link, self.details, tuple(self.participants)))
 
+    def __eq__(self, other):
+        if isinstance(other, Meeting):
+            return (self.date, self.link, self.details, tuple(self.participants)) == \
+                   (other.date, other.link, other.details, tuple(other.participants))
+        return False
+    
 class MentorMeetingHistory:
     """
     Represents the meeting history for a mentor.
