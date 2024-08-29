@@ -1,7 +1,7 @@
 # Mentor Mentee System
 
 This project is a Mentor-Mentee System built using Django. This README will guide you on how to set up your development environment, including creating and activating a virtual environment with `pipenv`, and installing Django.
-
+[Watch this video](MentorMap.mp4)
 ## Getting Started
 
 ### Prerequisites
