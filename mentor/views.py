@@ -364,6 +364,27 @@ def search_mentee(request):
             return render(request, "display_mentee.html", {"mentee": mentee_node})
     return render(request, "display_mentee.html")
 
+def remove_duplicates_from_dict(meeting_dict):
+    """
+    Removes duplicates from the lists of meetings for each mentor in the dictionary.
+    
+    Args:
+        meeting_dict (dict): A dictionary with mentor names as keys and lists of Meeting objects as values.
+    
+    Returns:
+        dict: A dictionary with duplicates removed from the lists of meetings.
+    """
+    for mentor, meetings in meeting_dict.items():
+        # Use a set to track seen meetings and ensure uniqueness
+        seen = set()
+        unique_meetings = []
+        for meeting in meetings:
+            if meeting not in seen:
+                seen.add(meeting)
+                unique_meetings.append(meeting)
+        # Update the list with unique meetings
+        meeting_dict[mentor] = unique_meetings
+    return meeting_dict
 
 def add_meeting(request):
     """
@@ -376,26 +397,45 @@ def add_meeting(request):
         If the request method is GET, renders the meeting_history.html template with the mentor's meetings and meeting history passed as context variables.
         If the request method is POST, adds the meeting to the mentor's meeting history and redirects to the meeting history page.
     """
-    mentor = request.session.get('mentor')
-    meetings = mentor_meeting_history.get_meeting_records(mentor)
-    mentor_name = mentor
-    mentor = tree.find_node_by_name(mentor)
+    mentor_name = request.session.get('mentor')
+    
+    # Initialize mentor_meeting_history if it is not yet instantiated
+    if 'mentor_meeting_history' not in globals():
+        global mentor_meeting_history
+        mentor_meeting_history = MentorMeetingHistory()
+
+    # Retrieve meeting records
+    meetings = mentor_meeting_history.get_meeting_records(mentor_name)
+    mentor = tree.find_node_by_name(mentor_name)
 
     if request.method == "POST":
         date = request.POST.get('date')
         link = request.POST.get('link')
         details = request.POST.get('details')
-        # Use getlist() to retrieve multiple selected values
         participants = request.POST.getlist('participants')
 
-        meeting = Meeting(date=date, link=link,
-                          details=details, participants=participants)
+        meeting = Meeting(date=date, link=link, details=details, participants=participants)
         meetings.append(meeting)
         mentor_meeting_history.add_meeting_record(mentor_name, meeting)
+        
+        # Remove duplicates
+        mentor_meeting_history.meeting_history.put(mentor_name, remove_duplicates_from_dict({
+            mentor_name: meetings
+        }).get(mentor_name))
 
-        return render(request, 'meeting_history.html', {'meetings': meetings, 'mentor': mentor, 'mentor_meeting_history': mentor_meeting_history})
+        print (mentor_meeting_history.meeting_history)
+        return render(request, 'meeting_history.html', {
+            'meetings': meetings,
+            'mentor': mentor,
+            'mentor_meeting_history': mentor_meeting_history
+        })
 
-    return render(request, 'meeting_history.html', {'meetings': meetings, 'mentor': mentor, 'mentor_meeting_history': mentor_meeting_history})
+    return render(request, 'meeting_history.html', {
+        'meetings': meetings,
+        'mentor': mentor,
+        'mentor_meeting_history': mentor_meeting_history
+    })
+
 
 
 def list_of_mentees(request):
